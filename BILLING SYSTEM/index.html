@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L'AURORA • Gastronomy & Bistro POS Billing System</title>
+  <meta name="description" content="State of the art Restaurant Billing, Point of Sale, Table Management and Kitchen Display System.">
+  <meta name="theme-color" content="#0a0d14">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/jpeg" href="assets/images/logo.jpg">
+  
+  <!-- Google Fonts Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Main POS App Shell -->
+  <div id="pos-app">
+    
+    <!-- Top Navigation Bar -->
+    <header class="pos-navbar">
+      
+      <!-- Brand & Profile -->
+      <div class="brand-section">
+        <img src="assets/images/logo.jpg" alt="L'Aurora Restaurant" class="brand-logo-img" id="app-logo">
+        <div class="brand-details">
+          <div class="brand-name">
+            <span id="nav-brand-name">L'AURORA</span>
+            <span class="brand-tag">POS PRO</span>
+          </div>
+          <span class="brand-subtitle" id="nav-server-info">Alex Vance • Register #01</span>
+        </div>
+      </div>
+
+      <!-- Order Mode Switcher (Dine-In, Takeaway, Delivery) -->
+      <nav class="order-modes-container" aria-label="Order Mode">
+        <button type="button" class="order-mode-pill active" data-mode="dine-in" id="btn-mode-dinein">
+          <span>🍽️</span> Dine-In
+        </button>
+        <button type="button" class="order-mode-pill" data-mode="takeaway" id="btn-mode-takeaway">
+          <span>🛍️</span> Takeaway
+        </button>
+        <button type="button" class="order-mode-pill" data-mode="delivery" id="btn-mode-delivery">
+          <span>🛵</span> Delivery
+        </button>
+      </nav>
+
+      <!-- Navigation & Action Tabs -->
+      <div class="nav-actions">
+        
+        <!-- Quick Table Badge Selector -->
+        <button type="button" class="nav-table-pill" id="btn-open-table-selector" title="Select or switch table">
+          <span class="table-status-dot" id="active-table-dot"></span>
+          <span id="active-table-text">Table: <strong>T-01 (Main)</strong></span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+
+        <!-- View Switcher Tabs -->
+        <div class="nav-views-tabs">
+          <button type="button" class="nav-tab-btn active" data-view="menu" id="tab-menu" title="Menu Catalog">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>
+            <span>Menu</span>
+          </button>
+          <button type="button" class="nav-tab-btn" data-view="tables" id="tab-tables" title="Floor Plan & Tables">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+            <span>Tables</span>
+          </button>
+          <button type="button" class="nav-tab-btn" data-view="kds" id="tab-kds" title="Kitchen Display System">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"/><path d="M12 6v6l4 2"/></svg>
+            <span>Kitchen</span>
+            <span class="badge-counter" id="kds-badge-count">2</span>
+          </button>
+          <button type="button" class="nav-tab-btn" data-view="analytics" id="tab-analytics" title="Sales Analytics">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" x2="12" y1="20" y2="10"/><line x1="18" x2="18" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="16"/></svg>
+            <span>Reports</span>
+          </button>
+          <button type="button" class="nav-tab-btn" data-view="settings" id="tab-settings" title="System Settings">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+            <span>Settings</span>
+          </button>
+        </div>
+
+        <!-- Audio Toggle Button -->
+        <button type="button" class="icon-btn" id="btn-toggle-sound" title="Toggle Sound Feedback">
+          <svg id="icon-sound-on" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+        </button>
+
+        <!-- Theme Toggle Button (Dark / Light) -->
+        <button type="button" class="icon-btn" id="btn-toggle-theme" title="Toggle Dark/Light Mode">
+          <svg id="icon-theme" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+        </button>
+
+        <!-- Live Clock -->
+        <div class="clock-display">
+          <span class="clock-time" id="live-clock-time">12:00:00 PM</span>
+          <span class="clock-date" id="live-clock-date">Oct 27, 2026</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Workspace Container -->
+    <div class="pos-main-container">
+      
+      <!-- Primary Dynamic Views (Menu, Tables, KDS, Analytics, Settings) -->
+      <section class="pos-views-wrapper">
+        
+        <!-- VIEW 1: MENU CATALOG & ORDERING -->
+        <div class="pos-view-pane active" id="view-menu">
+          
+          <!-- Top Search & Dietary Filter Toolbar -->
+          <div class="menu-top-toolbar">
+            <div class="search-bar-box">
+              <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <input type="text" id="menu-search-input" class="search-input" placeholder="Search dishes, drinks, ingredients... (Press '/' to focus)" autocomplete="off">
+              <span class="search-kbd-hint">/</span>
+            </div>
+
+            <div class="diet-filters-group">
+              <button type="button" class="diet-filter-pill active" data-diet="all">All</button>
+              <button type="button" class="diet-filter-pill" data-diet="veg">🟢 Veg</button>
+              <button type="button" class="diet-filter-pill" data-diet="nonveg">🔴 Non-Veg</button>
+              <button type="button" class="diet-filter-pill" data-diet="special">⭐ Chef's Special</button>
+              <button type="button" class="diet-filter-pill" data-diet="gf">🌾 Gluten-Free</button>
+            </div>
+          </div>
+
+          <!-- Category Horizontal Pills -->
+          <div class="categories-tabs-nav" id="categories-container">
+            <!-- Dynamically populated categories -->
+          </div>
+
+          <!-- Dishes Catalog Grid -->
+          <div class="menu-grid" id="dishes-container">
+            <!-- Dynamically populated dish cards -->
+          </div>
+
+        </div>
+
+        <!-- VIEW 2: INTERACTIVE FLOOR PLAN & TABLE MANAGEMENT -->
+        <div class="pos-view-pane" id="view-tables">
+          <div class="tables-header-row">
+            <h2 class="section-title">
+              <span>🏛️</span> Floor Plan & Live Table Occupancy
+            </h2>
+            <div class="tables-legend">
+              <div class="legend-item"><span class="legend-chip legend-available"></span> Available</div>
+              <div class="legend-item"><span class="legend-chip legend-occupied"></span> Occupied (Active)</div>
+              <div class="legend-item"><span class="legend-chip legend-billed"></span> Billed / Settle</div>
+              <div class="legend-item"><span class="legend-chip legend-reserved"></span> Reserved</div>
+            </div>
+          </div>
+
+          <div class="floor-zones-container" id="floor-zones-container">
+            <!-- Dynamically populated floor zones and tables -->
+          </div>
+        </div>
+
+        <!-- VIEW 3: KITCHEN DISPLAY SYSTEM (KDS) -->
+        <div class="pos-view-pane" id="view-kds">
+          <div class="tables-header-row">
+            <h2 class="section-title">
+              <span>🧑‍🍳</span> Kitchen Display System (Live KOT Board)
+            </h2>
+            <div class="tables-legend">
+              <span style="color: var(--accent-gold); font-size: 0.85rem; font-weight: 600;">⚡ Real-time Kitchen Order Pipeline</span>
+            </div>
+          </div>
+
+          <div class="kds-columns-grid">
+            
+            <!-- Column 1: New / Pending Orders -->
+            <div class="kds-column">
+              <div class="kds-column-header" style="color: var(--accent-rose);">
+                <span>🔥 New Incoming (<span id="kds-count-new">0</span>)</span>
+                <span style="font-size: 0.72rem; color: var(--text-muted);">Action required</span>
+              </div>
+              <div class="kds-cards-stream" id="kds-stream-new">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+            <!-- Column 2: In Kitchen / Preparing -->
+            <div class="kds-column">
+              <div class="kds-column-header" style="color: var(--accent-gold);">
+                <span>🍳 Cooking & Prep (<span id="kds-count-prep">0</span>)</span>
+                <span style="font-size: 0.72rem; color: var(--text-muted);">In kitchen</span>
+              </div>
+              <div class="kds-cards-stream" id="kds-stream-prep">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+            <!-- Column 3: Ready for Pickup / Served -->
+            <div class="kds-column">
+              <div class="kds-column-header" style="color: var(--accent-emerald);">
+                <span>✨ Ready to Serve (<span id="kds-count-ready">0</span>)</span>
+                <span style="font-size: 0.72rem; color: var(--text-muted);">Expedite</span>
+              </div>
+              <div class="kds-cards-stream" id="kds-stream-ready">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- VIEW 4: SALES ANALYTICS & REPORTS -->
+        <div class="pos-view-pane" id="view-analytics">
+          <div class="tables-header-row">
+            <h2 class="section-title">
+              <span>📊</span> Executive Sales Analytics & Invoices
+            </h2>
+            <button type="button" class="btn-kot" id="btn-export-csv" style="padding: 7px 16px;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+              <span>Export CSV Report</span>
+            </button>
+          </div>
+
+          <!-- Top Metric KPI Cards -->
+          <div class="analytics-overview-row">
+            <div class="metric-card">
+              <span class="metric-label">Gross Sales Today</span>
+              <span class="metric-value" id="kpi-gross-revenue">$222.67</span>
+              <span class="metric-trend">↑ 14.8% vs last week</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">Completed Invoices</span>
+              <span class="metric-value" id="kpi-orders-count">3</span>
+              <span class="metric-trend" style="color: var(--accent-gold);">100% Settle Rate</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">Average Ticket (AOV)</span>
+              <span class="metric-value" id="kpi-aov">$74.22</span>
+              <span class="metric-trend">Premium dining tier</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">Taxes & Service Collected</span>
+              <span class="metric-value" id="kpi-taxes">$23.55</span>
+              <span class="metric-trend" style="color: var(--text-muted);">Reconciled</span>
+            </div>
+          </div>
+
+          <!-- Recent Invoices Table -->
+          <div class="invoices-table-card">
+            <h3 style="font-size: 1rem; font-weight: 700;">Recent Transaction Journal</h3>
+            <table class="invoices-table">
+              <thead>
+                <tr>
+                  <th>Invoice ID</th>
+                  <th>Time</th>
+                  <th>Order Type</th>
+                  <th>Table / Customer</th>
+                  <th>Items</th>
+                  <th>Grand Total</th>
+                  <th>Payment</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="invoices-table-body">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- VIEW 5: SYSTEM SETTINGS -->
+        <div class="pos-view-pane" id="view-settings">
+          <div class="tables-header-row">
+            <h2 class="section-title">
+              <span>⚙️</span> Restaurant Profile & Billing Configuration
+            </h2>
+            <button type="button" class="btn-checkout" id="btn-save-settings" style="width: auto; padding: 10px 24px;">
+              <span>Save Changes</span>
+            </button>
+          </div>
+
+          <div class="settings-grid-layout">
+            
+            <!-- Restaurant Info Box -->
+            <div class="settings-box">
+              <h3 class="settings-box-title">
+                <span>🏨</span> Restaurant Information
+              </h3>
+              
+              <div class="form-group">
+                <label class="form-label" for="setting-name">Restaurant Trade Name</label>
+                <input type="text" id="setting-name" class="form-input">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="setting-tagline">Tagline / Motto</label>
+                <input type="text" id="setting-tagline" class="form-input">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="setting-address">Physical Address</label>
+                <input type="text" id="setting-address" class="form-input">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="setting-phone">Phone / Reservation Contact</label>
+                <input type="text" id="setting-phone" class="form-input">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="setting-gstin">Tax ID / VAT Registration #</label>
+                <input type="text" id="setting-gstin" class="form-input">
+              </div>
+            </div>
+
+            <!-- Currency & Tax Configuration -->
+            <div class="settings-box">
+              <h3 class="settings-box-title">
+                <span>🪙</span> Currency & Tax Rules
+              </h3>
+
+              <div class="form-group">
+                <label class="form-label" for="setting-currency">Currency Symbol & Code</label>
+                <select id="setting-currency" class="form-select">
+                  <option value="$|USD">USD - $ United States Dollar</option>
+                  <option value="€|EUR">EUR - € Euro</option>
+                  <option value="£|GBP">GBP - £ British Pound</option>
+                  <option value="₹|INR">INR - ₹ Indian Rupee</option>
+                  <option value="AED|AED">AED - Dirhams (UAE)</option>
+                  <option value="C$|CAD">CAD - Canadian Dollar</option>
+                  <option value="A$|AUD">AUD - Australian Dollar</option>
+                  <option value="¥|JPY">JPY - Japanese Yen</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="setting-tax1-rate">Primary Tax 1 % (e.g. State Sales / VAT / CGST)</label>
+                <input type="number" step="0.01" id="setting-tax1-rate" class="form-input">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="setting-tax2-rate">Secondary Tax 2 % (e.g. Hospitality / SGST)</label>
+                <input type="number" step="0.01" id="setting-tax2-rate" class="form-input">
+              </div>
+
+              <div class="toggle-row">
+                <span class="switch-label">Enable Service Charge (5%)</span>
+                <label class="switch" for="setting-service-charge">
+                  <input type="checkbox" id="setting-service-charge">
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="toggle-row">
+                <span class="switch-label">Audio Synth Feedback</span>
+                <label class="switch" for="setting-sounds">
+                  <input type="checkbox" id="setting-sounds" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border-subtle);">
+                <button type="button" class="btn-kot" id="btn-reset-demo" style="width: 100%; color: var(--accent-rose); border-color: rgba(244, 63, 94, 0.4);">
+                  ⚠️ Reset Database to Defaults
+                </button>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+      </section>
+
+      <!-- RIGHT SIDEBAR: ACTIVE ORDER TICKET & BILLING CONSOLE -->
+      <aside class="pos-cart-panel" aria-label="Order Cart and Billing Console">
+        
+        <!-- Cart Header -->
+        <div class="cart-panel-header">
+          <span class="cart-order-badge" id="cart-order-id">ORD-1050</span>
+          <div class="cart-table-info">
+            <span id="cart-table-tag">🍽️ T-01 (Main Dining)</span>
+          </div>
+          <button type="button" class="cart-item-delete" id="btn-clear-cart" title="Clear Ticket">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+          </button>
+        </div>
+
+        <!-- Guest Tag Input -->
+        <div class="cart-guest-bar">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <input type="text" id="cart-guest-name" class="guest-input" placeholder="Customer Name (e.g. Sophia)">
+          <input type="number" id="cart-guest-count" class="guest-input" style="max-width: 60px; text-align: center;" placeholder="Guests" value="2" min="1" max="20">
+        </div>
+
+        <!-- Cart Items Scroll List -->
+        <div class="cart-items-list" id="cart-items-list">
+          <!-- Dynamically populated or empty state -->
+        </div>
+
+        <!-- Cart Calculation & Checkout Footer -->
+        <div class="cart-calculation-footer">
+          
+          <!-- Discount Presets -->
+          <div class="discount-preset-strip">
+            <span style="font-size: 0.72rem; color: var(--text-muted); margin-right: 4px;">Discount:</span>
+            <button type="button" class="discount-btn active" data-discount="0">0%</button>
+            <button type="button" class="discount-btn" data-discount="5">5%</button>
+            <button type="button" class="discount-btn" data-discount="10">10%</button>
+            <button type="button" class="discount-btn" data-discount="15">15%</button>
+            <button type="button" class="discount-btn" data-discount="20">20%</button>
+          </div>
+
+          <div class="summary-line-row">
+            <span>Subtotal</span>
+            <span id="summary-subtotal">$0.00</span>
+          </div>
+
+          <div class="summary-line-row discount-line" id="summary-discount-row" style="display: none;">
+            <span>Discount (<span id="summary-discount-pct">0</span>%)</span>
+            <span id="summary-discount-val">-$0.00</span>
+          </div>
+
+          <div class="summary-line-row">
+            <span id="summary-tax1-label">Taxes (VAT / Sales)</span>
+            <span id="summary-tax-amount">$0.00</span>
+          </div>
+
+          <div class="summary-line-row" id="summary-service-row">
+            <span>Service Charge (5%)</span>
+            <span id="summary-service-amount">$0.00</span>
+          </div>
+
+          <div class="grand-total-row">
+            <span class="grand-total-label">Total Payable</span>
+            <span class="grand-total-amount" id="summary-grand-total">$0.00</span>
+          </div>
+
+          <!-- Bottom Action Buttons -->
+          <div class="cart-actions-grid">
+            <button type="button" class="btn-kot" id="btn-send-kot">
+              <span>🧑‍🍳</span> Fire KOT
+            </button>
+            <button type="button" class="btn-split" id="btn-open-split-modal">
+              <span>👥</span> Split Bill
+            </button>
+            <button type="button" class="btn-checkout" id="btn-proceed-pay">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+              <span>SETTLE & BILL</span>
+            </button>
+          </div>
+
+        </div>
+
+      </aside>
+
+    </div>
+
+  </div>
+
+  <!-- ==========================================================================
+       MODALS
+       ========================================================================== -->
+
+  <!-- MODAL 1: CHECKOUT & PAYMENT MODAL -->
+  <div class="modal-backdrop" id="modal-payment">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <span>💳</span> Payment Settlement
+        </h3>
+        <button type="button" class="modal-close-btn" data-close-modal="modal-payment">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        
+        <!-- Payable Amount Display -->
+        <div style="text-align: center; background: var(--bg-card); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+          <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Amount to Collect</span>
+          <div style="font-family: var(--font-mono); font-size: 2.2rem; font-weight: 800; color: var(--accent-gold); margin-top: 4px;" id="modal-pay-amount">
+            $0.00
+          </div>
+        </div>
+
+        <!-- Payment Mode Tabs (Cash, Card, UPI / QR, Wallet) -->
+        <div class="payment-modes-tabs">
+          <button type="button" class="pay-tab active" data-paymethod="cash">
+            <span class="pay-tab-icon">💵</span>
+            <span>Cash</span>
+          </button>
+          <button type="button" class="pay-tab" data-paymethod="card">
+            <span class="pay-tab-icon">💳</span>
+            <span>Card</span>
+          </button>
+          <button type="button" class="pay-tab" data-paymethod="qr">
+            <span class="pay-tab-icon">📱</span>
+            <span>QR / UPI</span>
+          </button>
+          <button type="button" class="pay-tab" data-paymethod="wallet">
+            <span class="pay-tab-icon">🍏</span>
+            <span>Apple Pay</span>
+          </button>
+        </div>
+
+        <!-- Tip Selector -->
+        <div>
+          <span style="font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px; display: block;">Add Tip for Server:</span>
+          <div class="discount-preset-strip" id="tip-preset-strip">
+            <button type="button" class="discount-btn active" data-tip="0">No Tip</button>
+            <button type="button" class="discount-btn" data-tip="5">5%</button>
+            <button type="button" class="discount-btn" data-tip="10">10%</button>
+            <button type="button" class="discount-btn" data-tip="15">15%</button>
+            <button type="button" class="discount-btn" data-tip="20">20%</button>
+          </div>
+        </div>
+
+        <!-- VIEW: CASH METHOD -->
+        <div class="payment-view-pane active" id="pay-view-cash">
+          <div class="cash-preset-grid">
+            <button type="button" class="cash-pill-btn" id="cash-exact-btn">Exact</button>
+            <button type="button" class="cash-pill-btn" data-cash="10">+$10</button>
+            <button type="button" class="cash-pill-btn" data-cash="20">+$20</button>
+            <button type="button" class="cash-pill-btn" data-cash="50">+$50</button>
+            <button type="button" class="cash-pill-btn" data-cash="100">+$100</button>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="cash-received-input">Tendered Cash Received</label>
+            <input type="number" step="0.5" id="cash-received-input" class="form-input" style="font-size: 1.2rem; font-family: var(--font-mono); font-weight: 700;">
+          </div>
+
+          <div class="change-calculator-box">
+            <div class="change-line">
+              <span>Total Bill</span>
+              <span id="cash-calc-total">$0.00</span>
+            </div>
+            <div class="change-line">
+              <span>Cash Tendered</span>
+              <span id="cash-calc-tendered">$0.00</span>
+            </div>
+            <div class="change-line highlight">
+              <span>Change Due Back</span>
+              <span id="cash-calc-change">$0.00</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIEW: CARD METHOD -->
+        <div class="payment-view-pane" id="pay-view-card">
+          <div style="background: var(--bg-card); border: 1px dashed var(--border-medium); border-radius: var(--radius-lg); padding: 30px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 12px;">
+            <div style="width: 50px; height: 50px; border-radius: 50%; background: rgba(245, 158, 11, 0.15); display: flex; align-items: center; justify-content: center; color: var(--accent-gold);">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            </div>
+            <strong style="font-size: 1rem;">Tap or Insert Card on POS Terminal</strong>
+            <p style="font-size: 0.8rem; color: var(--text-secondary);">Visa, Mastercard, American Express, Contactless EMV Chip accepted.</p>
+            <button type="button" class="btn-kot" id="btn-simulate-card-tap" style="border-color: var(--accent-gold); color: var(--accent-gold);">
+              ⚡ Simulate Card Tap Approval
+            </button>
+          </div>
+        </div>
+
+        <!-- VIEW: QR / UPI METHOD -->
+        <div class="payment-view-pane" id="pay-view-qr">
+          <div class="qr-container">
+            <!-- Dynamic Vector QR Code -->
+            <svg class="qr-code-svg" viewBox="0 0 100 100">
+              <rect width="100" height="100" fill="#ffffff"/>
+              <!-- Position Marker Top Left -->
+              <rect x="10" y="10" width="24" height="24" fill="#000000"/>
+              <rect x="14" y="14" width="16" height="16" fill="#ffffff"/>
+              <rect x="18" y="18" width="8" height="8" fill="#000000"/>
+              <!-- Position Marker Top Right -->
+              <rect x="66" y="10" width="24" height="24" fill="#000000"/>
+              <rect x="70" y="14" width="16" height="16" fill="#ffffff"/>
+              <rect x="74" y="18" width="8" height="8" fill="#000000"/>
+              <!-- Position Marker Bottom Left -->
+              <rect x="10" y="66" width="24" height="24" fill="#000000"/>
+              <rect x="14" y="70" width="16" height="16" fill="#ffffff"/>
+              <rect x="18" y="74" width="8" height="8" fill="#000000"/>
+              <!-- Dense data simulation pattern -->
+              <rect x="38" y="12" width="6" height="6" fill="#000"/>
+              <rect x="48" y="12" width="6" height="6" fill="#000"/>
+              <rect x="38" y="24" width="6" height="6" fill="#000"/>
+              <rect x="54" y="24" width="6" height="6" fill="#000"/>
+              <rect x="12" y="38" width="6" height="6" fill="#000"/>
+              <rect x="24" y="38" width="6" height="6" fill="#000"/>
+              <rect x="38" y="38" width="12" height="12" fill="#000"/>
+              <rect x="56" y="38" width="6" height="6" fill="#000"/>
+              <rect x="68" y="38" width="12" height="6" fill="#000"/>
+              <rect x="84" y="38" width="6" height="6" fill="#000"/>
+              <rect x="38" y="56" width="6" height="12" fill="#000"/>
+              <rect x="48" y="56" width="12" height="6" fill="#000"/>
+              <rect x="68" y="56" width="6" height="12" fill="#000"/>
+              <rect x="80" y="56" width="8" height="6" fill="#000"/>
+              <rect x="38" y="74" width="6" height="12" fill="#000"/>
+              <rect x="48" y="74" width="12" height="6" fill="#000"/>
+              <rect x="66" y="74" width="12" height="12" fill="#000"/>
+              <rect x="84" y="74" width="6" height="12" fill="#000"/>
+            </svg>
+            <span class="qr-amount-pill" id="qr-amount-display">$0.00</span>
+            <span style="font-size: 0.72rem; color: #475569;">Scan with Apple Pay, Google Pay, UPI or Bank App</span>
+          </div>
+        </div>
+
+        <!-- VIEW: DIGITAL WALLET -->
+        <div class="payment-view-pane" id="pay-view-wallet">
+          <div style="background: var(--bg-card); border-radius: var(--radius-lg); padding: 24px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 14px;">
+            <div style="font-size: 2.5rem;">🍏 📲</div>
+            <strong style="font-size: 1rem;">Hold iPhone or Apple Watch near reader</strong>
+            <p style="font-size: 0.8rem; color: var(--text-secondary);">Direct NFC Contactless payment enabled.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-kot" data-close-modal="modal-payment">Cancel</button>
+        <button type="button" class="btn-checkout" id="btn-confirm-payment" style="width: auto; padding: 12px 30px;">
+          <span>Complete Settlement & Print</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL 2: ITEM CUSTOMIZER / MODIFIERS -->
+  <div class="modal-backdrop" id="modal-customizer">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title" id="customizer-dish-title">Dish Customization</h3>
+        <button type="button" class="modal-close-btn" data-close-modal="modal-customizer">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="display: flex; gap: 14px; align-items: center;">
+          <img src="" alt="" id="customizer-dish-img" style="width: 80px; height: 80px; border-radius: var(--radius-md); object-fit: cover;">
+          <div>
+            <h4 id="customizer-name-display" style="font-size: 1.05rem; font-weight: 700;">Dish Name</h4>
+            <span id="customizer-base-price" style="font-family: var(--font-mono); font-size: 1rem; color: var(--accent-gold); font-weight: 700;">$0.00</span>
+          </div>
+        </div>
+
+        <div>
+          <span style="font-size: 0.82rem; font-weight: 700; margin-bottom: 8px; display: block;">Select Add-ons & Modifiers:</span>
+          <div id="customizer-modifiers-list" style="display: flex; flex-direction: column; gap: 8px;">
+            <!-- Checkbox modifiers -->
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="customizer-special-notes">Special Kitchen Instructions / Allergies</label>
+          <input type="text" id="customizer-special-notes" class="form-input" placeholder="e.g., No onions, dressing on side, extra spicy...">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-kot" data-close-modal="modal-customizer">Cancel</button>
+        <button type="button" class="btn-checkout" id="btn-customizer-add-cart" style="width: auto; padding: 10px 24px;">
+          <span>Add to Ticket</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 3: SPLIT BILL CALCULATOR -->
+  <div class="modal-backdrop" id="modal-split-bill">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <span>👥</span> Split Bill Calculator
+        </h3>
+        <button type="button" class="modal-close-btn" data-close-modal="modal-split-bill">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="text-align: center; background: var(--bg-card); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+          <span style="font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase;">Total Table Amount</span>
+          <div style="font-family: var(--font-mono); font-size: 1.8rem; font-weight: 800; color: var(--accent-gold);" id="split-total-display">$0.00</div>
+        </div>
+
+        <div>
+          <span style="font-size: 0.82rem; font-weight: 600; margin-bottom: 8px; display: block;">Split Between How Many People?</span>
+          <div class="cash-preset-grid" id="split-preset-buttons">
+            <button type="button" class="cash-pill-btn" data-split="2">2 Ways</button>
+            <button type="button" class="cash-pill-btn" data-split="3">3 Ways</button>
+            <button type="button" class="cash-pill-btn active" data-split="4">4 Ways</button>
+            <button type="button" class="cash-pill-btn" data-split="5">5 Ways</button>
+          </div>
+        </div>
+
+        <div class="change-calculator-box">
+          <div class="change-line">
+            <span>Guests Sharing:</span>
+            <span id="split-guests-count">4</span>
+          </div>
+          <div class="change-line highlight">
+            <span>Each Person Pays:</span>
+            <span id="split-per-person">$0.00</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-kot" data-close-modal="modal-split-bill">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 4: THERMAL PRINT RECEIPT / INVOICE PREVIEW -->
+  <div class="modal-backdrop" id="printable-receipt-modal">
+    <div class="modal-container" style="max-width: 440px;">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <span>🧾</span> Official Thermal Invoice
+        </h3>
+        <button type="button" class="modal-close-btn" data-close-modal="printable-receipt-modal">&times;</button>
+      </div>
+
+      <div class="modal-body" style="background: #222; padding: 24px 10px;">
+        
+        <!-- Thermal Receipt Paper Replica -->
+        <div class="receipt-paper-wrapper" id="receipt-paper-content">
+          <div class="receipt-center-text">
+            <div class="receipt-logo-header" id="rcpt-restaurant-name">L'AURORA RESTAURANT</div>
+            <div id="rcpt-tagline" style="font-size: 10px;">FINE GASTRONOMY & BAR</div>
+            <div id="rcpt-address" style="font-size: 9px; color: #555;">742 Evergreen Avenue, New York, NY</div>
+            <div id="rcpt-phone" style="font-size: 9px; color: #555;">Tel: +1 (555) 948-2200</div>
+            <div id="rcpt-gstin" style="font-size: 9px; color: #555;">GSTIN/Tax ID: US-TAX-84920491-B</div>
+          </div>
+
+          <div class="receipt-divider"></div>
+
+          <div style="display: flex; justify-content: space-between; font-size: 10px;">
+            <span>Inv #: <strong id="rcpt-invoice-id">AUR-1050</strong></span>
+            <span id="rcpt-date-time">10/27/2026 12:45 PM</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 10px; margin-top: 2px;">
+            <span>Table: <strong id="rcpt-table-name">Table 1</strong></span>
+            <span>Server: <span id="rcpt-server-name">Alex Vance</span></span>
+          </div>
+          <div style="font-size: 10px; margin-top: 2px;">
+            <span>Customer: <strong id="rcpt-customer-name">Walk-in Guest</strong></span>
+          </div>
+
+          <div class="receipt-divider"></div>
+
+          <table class="receipt-table">
+            <thead>
+              <tr>
+                <th>ITEM</th>
+                <th class="num-col">QTY</th>
+                <th class="num-col">PRICE</th>
+                <th class="num-col">TOTAL</th>
+              </tr>
+            </thead>
+            <tbody id="rcpt-items-body">
+              <!-- Dynamically populated items -->
+            </tbody>
+          </table>
+
+          <div class="receipt-divider"></div>
+
+          <div style="display: flex; justify-content: space-between;">
+            <span>Subtotal:</span>
+            <span id="rcpt-subtotal" class="num-col">$0.00</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;" id="rcpt-discount-row">
+            <span>Discount:</span>
+            <span id="rcpt-discount" class="num-col">-$0.00</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span id="rcpt-tax-label">State Tax & VAT:</span>
+            <span id="rcpt-tax" class="num-col">$0.00</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;" id="rcpt-service-row">
+            <span>Service Charge (5%):</span>
+            <span id="rcpt-service" class="num-col">$0.00</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;" id="rcpt-tip-row">
+            <span>Tip / Gratuity:</span>
+            <span id="rcpt-tip" class="num-col">$0.00</span>
+          </div>
+
+          <div class="receipt-grand-total">
+            <span>GRAND TOTAL:</span>
+            <span id="rcpt-grand-total">$0.00</span>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; font-size: 10px;">
+            <span>Payment Method:</span>
+            <strong id="rcpt-payment-mode">CASH</strong>
+          </div>
+
+          <div class="receipt-divider"></div>
+
+          <!-- Barcode representation -->
+          <div class="receipt-center-text">
+            <svg class="barcode-svg" viewBox="0 0 200 40">
+              <rect x="10" y="2" width="3" height="34" fill="#000"/>
+              <rect x="16" y="2" width="2" height="34" fill="#000"/>
+              <rect x="22" y="2" width="4" height="34" fill="#000"/>
+              <rect x="29" y="2" width="2" height="34" fill="#000"/>
+              <rect x="35" y="2" width="5" height="34" fill="#000"/>
+              <rect x="44" y="2" width="2" height="34" fill="#000"/>
+              <rect x="50" y="2" width="3" height="34" fill="#000"/>
+              <rect x="58" y="2" width="4" height="34" fill="#000"/>
+              <rect x="66" y="2" width="2" height="34" fill="#000"/>
+              <rect x="74" y="2" width="6" height="34" fill="#000"/>
+              <rect x="84" y="2" width="2" height="34" fill="#000"/>
+              <rect x="90" y="2" width="4" height="34" fill="#000"/>
+              <rect x="98" y="2" width="2" height="34" fill="#000"/>
+              <rect x="105" y="2" width="5" height="34" fill="#000"/>
+              <rect x="114" y="2" width="3" height="34" fill="#000"/>
+              <rect x="122" y="2" width="4" height="34" fill="#000"/>
+              <rect x="130" y="2" width="2" height="34" fill="#000"/>
+              <rect x="136" y="2" width="5" height="34" fill="#000"/>
+              <rect x="145" y="2" width="2" height="34" fill="#000"/>
+              <rect x="152" y="2" width="4" height="34" fill="#000"/>
+              <rect x="160" y="2" width="3" height="34" fill="#000"/>
+              <rect x="168" y="2" width="5" height="34" fill="#000"/>
+              <rect x="178" y="2" width="3" height="34" fill="#000"/>
+              <rect x="185" y="2" width="4" height="34" fill="#000"/>
+            </svg>
+            <div style="font-size: 8px; letter-spacing: 2px;">*** THANK YOU FOR DINING WITH US ***</div>
+            <div style="font-size: 8px; color: #666; margin-top: 3px;">Please visit again • Wifi: AuroraGuest / pass: bonappetit</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-kot" id="btn-print-receipt">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
+          <span>Print Thermal Receipt</span>
+        </button>
+        <button type="button" class="btn-checkout" id="btn-receipt-new-order" style="width: auto; padding: 10px 20px;">
+          <span>Start New Order</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="pos-toast-container" id="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="js/menu-data.js"></script>
+  <script src="js/sound.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
